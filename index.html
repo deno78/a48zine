@@ -126,7 +126,7 @@
                 );
             }
 
-            /* Alternative: small marks at both ends of center line */
+            /* Small marks at both ends of center line */
             .preview-container::after {
                 content: '';
                 position: absolute;
@@ -135,9 +135,6 @@
                 top: 50%;
                 height: 0;
                 background: none;
-            }
-
-            .preview-container::after {
                 box-shadow: 
                     0 0 0 1px #d0d0d0,
                     calc(100% - 1px) 0 0 1px #d0d0d0;
