@@ -109,13 +109,7 @@
                 page-break-after: avoid;
             }
 
-            /* Remove preview dotted line, replace with print-specific cut line */
-            .preview-container::before,
-            .preview-container::after {
-                background: none;
-            }
-
-            /* Add very light gray dotted center cut line for print */
+            /* Reset preview dotted line for print */
             .preview-container::before {
                 background: repeating-linear-gradient(
                     to right,
@@ -126,18 +120,9 @@
                 );
             }
 
-            /* Small marks at both ends of center line */
+            /* Reset ::after for print (no end marks needed) */
             .preview-container::after {
-                content: '';
-                position: absolute;
-                left: 0;
-                right: 0;
-                top: 50%;
-                height: 0;
                 background: none;
-                box-shadow: 
-                    0 0 0 1px #d0d0d0,
-                    calc(100% - 1px) 0 0 1px #d0d0d0;
             }
 
             .preview-page {
