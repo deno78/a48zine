@@ -24,9 +24,8 @@
             position: relative;
         }
 
-        /* Center cut line markers - visible only in preview */
-        .preview-container::before,
-        .preview-container::after {
+        /* Center cut line marker for preview */
+        .preview-container::before {
             content: '';
             position: absolute;
             left: 0;
@@ -109,7 +108,7 @@
                 page-break-after: avoid;
             }
 
-            /* Reset preview dotted line for print */
+            /* Update center cut line to very light gray for print */
             .preview-container::before {
                 background: repeating-linear-gradient(
                     to right,
@@ -118,11 +117,6 @@
                     transparent 3px,
                     transparent 8px
                 );
-            }
-
-            /* Reset ::after for print (no end marks needed) */
-            .preview-container::after {
-                background: none;
             }
 
             .preview-page {
