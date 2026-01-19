@@ -250,28 +250,28 @@
                 <div class="preview-container">
                     <!-- Top row: Pages 2, 3, 4, 5 (rotated 180 degrees) -->
                     <div class="preview-page rotate-180" id="preview2">
-                        <img id="preview-image2" class="page-image" style="display: none;">
+                        <img id="preview-image2" class="page-image" style="display: none;" alt="ページ2の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading2"></h2>
                             <p id="preview-content2"></p>
                         </div>
                     </div>
                     <div class="preview-page rotate-180" id="preview3">
-                        <img id="preview-image3" class="page-image" style="display: none;">
+                        <img id="preview-image3" class="page-image" style="display: none;" alt="ページ3の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading3"></h2>
                             <p id="preview-content3"></p>
                         </div>
                     </div>
                     <div class="preview-page rotate-180" id="preview4">
-                        <img id="preview-image4" class="page-image" style="display: none;">
+                        <img id="preview-image4" class="page-image" style="display: none;" alt="ページ4の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading4"></h2>
                             <p id="preview-content4"></p>
                         </div>
                     </div>
                     <div class="preview-page rotate-180" id="preview5">
-                        <img id="preview-image5" class="page-image" style="display: none;">
+                        <img id="preview-image5" class="page-image" style="display: none;" alt="ページ5の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading5"></h2>
                             <p id="preview-content5"></p>
@@ -280,28 +280,28 @@
 
                     <!-- Bottom row: Pages 1, 8, 7, 6 (normal orientation) -->
                     <div class="preview-page" id="preview1">
-                        <img id="preview-image1" class="page-image" style="display: none;">
+                        <img id="preview-image1" class="page-image" style="display: none;" alt="ページ1の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading1"></h2>
                             <p id="preview-content1"></p>
                         </div>
                     </div>
                     <div class="preview-page" id="preview8">
-                        <img id="preview-image8" class="page-image" style="display: none;">
+                        <img id="preview-image8" class="page-image" style="display: none;" alt="ページ8の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading8"></h2>
                             <p id="preview-content8"></p>
                         </div>
                     </div>
                     <div class="preview-page" id="preview7">
-                        <img id="preview-image7" class="page-image" style="display: none;">
+                        <img id="preview-image7" class="page-image" style="display: none;" alt="ページ7の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading7"></h2>
                             <p id="preview-content7"></p>
                         </div>
                     </div>
                     <div class="preview-page" id="preview6">
-                        <img id="preview-image6" class="page-image" style="display: none;">
+                        <img id="preview-image6" class="page-image" style="display: none;" alt="ページ6の画像">
                         <div class="page-text-content">
                             <h2 id="preview-heading6"></h2>
                             <p id="preview-content6"></p>
@@ -327,10 +327,21 @@
             const imageElement = document.getElementById(`preview-image${pageNumber}`);
             
             if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('画像ファイルを選択してください。');
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imageElement.src = e.target.result;
                     imageElement.style.display = 'block';
+                };
+                reader.onerror = function() {
+                    alert('画像の読み込みに失敗しました。');
+                    imageElement.style.display = 'none';
+                    imageElement.src = '';
                 };
                 reader.readAsDataURL(file);
             } else {
