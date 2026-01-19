@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A48zine - A4一枚で8ページのミニマガジン</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="qrcodegen.js"></script>
     <style>
         @page {
             size: A4 landscape;
@@ -67,6 +68,12 @@
             line-height: 1.2;
             overflow: hidden;
             white-space: pre-wrap;
+        }
+
+        .preview-page .qr-code {
+            max-width: 80px;
+            max-height: 80px;
+            margin: 4px auto;
         }
 
         /* Rotation for top row pages (2, 3, 4, 5) */
@@ -140,6 +147,11 @@
                 font-size: 11px;
                 white-space: pre-wrap;
             }
+
+            .preview-page .qr-code {
+                max-width: 100px;
+                max-height: 100px;
+            }
         }
 
         /* Input area styling */
@@ -197,6 +209,8 @@
                         <input type="text" id="heading1" placeholder="見出しを入力">
                         <label for="content1" class="mt-2">本文</label>
                         <textarea id="content1" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url1" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url1" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 2 -->
@@ -205,6 +219,8 @@
                         <input type="text" id="heading2" placeholder="見出しを入力">
                         <label for="content2" class="mt-2">本文</label>
                         <textarea id="content2" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url2" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url2" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 3 -->
@@ -213,6 +229,8 @@
                         <input type="text" id="heading3" placeholder="見出しを入力">
                         <label for="content3" class="mt-2">本文</label>
                         <textarea id="content3" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url3" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url3" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 4 -->
@@ -221,6 +239,8 @@
                         <input type="text" id="heading4" placeholder="見出しを入力">
                         <label for="content4" class="mt-2">本文</label>
                         <textarea id="content4" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url4" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url4" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 5 -->
@@ -229,6 +249,8 @@
                         <input type="text" id="heading5" placeholder="見出しを入力">
                         <label for="content5" class="mt-2">本文</label>
                         <textarea id="content5" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url5" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url5" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 6 -->
@@ -237,6 +259,8 @@
                         <input type="text" id="heading6" placeholder="見出しを入力">
                         <label for="content6" class="mt-2">本文</label>
                         <textarea id="content6" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url6" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url6" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 7 -->
@@ -245,6 +269,8 @@
                         <input type="text" id="heading7" placeholder="見出しを入力">
                         <label for="content7" class="mt-2">本文</label>
                         <textarea id="content7" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url7" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url7" placeholder="URLを入力（例: https://example.com）">
                     </div>
 
                     <!-- Page 8 -->
@@ -253,6 +279,8 @@
                         <input type="text" id="heading8" placeholder="見出しを入力">
                         <label for="content8" class="mt-2">本文</label>
                         <textarea id="content8" rows="3" placeholder="本文を入力"></textarea>
+                        <label for="url8" class="mt-2">QRコード用URL</label>
+                        <input type="url" id="url8" placeholder="URLを入力（例: https://example.com）">
                     </div>
                 </div>
             </div>
@@ -265,36 +293,44 @@
                     <div class="preview-page rotate-180" id="preview2">
                         <h2 id="preview-heading2"></h2>
                         <p id="preview-content2"></p>
+                        <canvas id="qr-canvas2" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page rotate-180" id="preview3">
                         <h2 id="preview-heading3"></h2>
                         <p id="preview-content3"></p>
+                        <canvas id="qr-canvas3" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page rotate-180" id="preview4">
                         <h2 id="preview-heading4"></h2>
                         <p id="preview-content4"></p>
+                        <canvas id="qr-canvas4" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page rotate-180" id="preview5">
                         <h2 id="preview-heading5"></h2>
                         <p id="preview-content5"></p>
+                        <canvas id="qr-canvas5" class="qr-code" style="display:none;"></canvas>
                     </div>
 
                     <!-- Bottom row: Pages 1, 8, 7, 6 (normal orientation) -->
                     <div class="preview-page" id="preview1">
                         <h2 id="preview-heading1"></h2>
                         <p id="preview-content1"></p>
+                        <canvas id="qr-canvas1" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page" id="preview8">
                         <h2 id="preview-heading8"></h2>
                         <p id="preview-content8"></p>
+                        <canvas id="qr-canvas8" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page" id="preview7">
                         <h2 id="preview-heading7"></h2>
                         <p id="preview-content7"></p>
+                        <canvas id="qr-canvas7" class="qr-code" style="display:none;"></canvas>
                     </div>
                     <div class="preview-page" id="preview6">
                         <h2 id="preview-heading6"></h2>
                         <p id="preview-content6"></p>
+                        <canvas id="qr-canvas6" class="qr-code" style="display:none;"></canvas>
                     </div>
                 </div>
             </div>
@@ -306,15 +342,36 @@
         function updatePreview(pageNumber) {
             const heading = document.getElementById(`heading${pageNumber}`).value;
             const content = document.getElementById(`content${pageNumber}`).value;
+            const url = document.getElementById(`url${pageNumber}`).value;
             
             document.getElementById(`preview-heading${pageNumber}`).textContent = heading;
             document.getElementById(`preview-content${pageNumber}`).textContent = content;
+            
+            // Generate QR code if URL is provided
+            const canvas = document.getElementById(`qr-canvas${pageNumber}`);
+            if (url && url.trim() !== '') {
+                QRCode.toCanvas(canvas, url, {
+                    width: 100,
+                    margin: 1,
+                    errorCorrectionLevel: 'M'
+                }, function (error) {
+                    if (error) {
+                        console.error('QRコード生成エラー:', error);
+                        canvas.style.display = 'none';
+                    } else {
+                        canvas.style.display = 'block';
+                    }
+                });
+            } else {
+                canvas.style.display = 'none';
+            }
         }
 
         // Add event listeners to all input fields
         for (let i = 1; i <= 8; i++) {
             document.getElementById(`heading${i}`).addEventListener('input', () => updatePreview(i));
             document.getElementById(`content${i}`).addEventListener('input', () => updatePreview(i));
+            document.getElementById(`url${i}`).addEventListener('input', () => updatePreview(i));
         }
 
         // Initialize with sample content (optional - can be removed)
