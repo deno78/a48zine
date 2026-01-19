@@ -1,92 +1,141 @@
-// QR Code generator library (JavaScript) - Minimal version
-// Based on Project Nayuki's QR Code generator
-// https://www.nayuki.io/page/qr-code-generator-library
-// Simplified for basic use
+/*
+ * QR Code generator - Simplified Implementation
+ * 
+ * NOTE: This is a simplified visual QR code generator that creates QR-like patterns.
+ * For production use with actual QR code scanning functionality, please replace this
+ * with a full QR code library such as:
+ * - qrcode.js (https://github.com/davidshimjs/qrcodejs)
+ * - node-qrcode (https://github.com/soldair/node-qrcode)
+ * - qr-code-generator by Nayuki (https://www.nayuki.io/page/qr-code-generator-library)
+ * 
+ * This implementation provides visual QR code patterns for layout purposes.
+ */
 
 (function() {
   'use strict';
   
-  // Simple QR Code text to data URL converter
-  window.generateQRCodeDataURL = function(text) {
-    // For simplicity, we'll create a basic pattern using canvas
-    // This is a very basic implementation - in production, use a full library
-    var canvas = document.createElement('canvas');
-    var size = 100;
-    canvas.width = size;
-    canvas.height = size;
-    var ctx = canvas.getContext('2d');
+  // Simplified QR Code generator
+  // Creates visual QR code patterns based on input text
+  // NOTE: These patterns are for visual representation and may not be scannable
+  // Replace with a full QR implementation for production scanning needs
+  
+  function generateQRCode(text, size) {
+    // Create a simple data matrix encoding
+    // This is a minimal QR code implementation
+    var qr = {
+      version: 1,
+      size: 21, // Version 1 = 21x21 modules
+      modules: []
+    };
     
-    // Fill background
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(0, 0, size, size);
+    // Initialize modules
+    for (var i = 0; i < qr.size; i++) {
+      qr.modules[i] = [];
+      for (var j = 0; j < qr.size; j++) {
+        qr.modules[i][j] = false;
+      }
+    }
     
-    // Create a simple grid pattern as a placeholder
-    // In a real implementation, this would encode the actual data
-    ctx.fillStyle = '#000000';
+    // Add finder patterns (corners)
+    addFinderPattern(qr.modules, 0, 0);
+    addFinderPattern(qr.modules, qr.size - 7, 0);
+    addFinderPattern(qr.modules, 0, qr.size - 7);
     
-    // Simple encoding: create a grid based on text hash
-    var moduleSize = 4;
-    var modules = Math.floor(size / moduleSize);
+    // Add timing patterns
+    for (var i = 8; i < qr.size - 8; i++) {
+      qr.modules[6][i] = (i % 2 === 0);
+      qr.modules[i][6] = (i % 2 === 0);
+    }
+    
+    // Add dark module
+    qr.modules[4 * qr.version + 9][8] = true;
+    
+    // Encode data (simplified - creates a pattern based on text)
+    encodeData(qr.modules, text, qr.size);
+    
+    return qr;
+  }
+  
+  function addFinderPattern(modules, row, col) {
+    for (var r = -1; r <= 7; r++) {
+      for (var c = -1; c <= 7; c++) {
+        var rr = row + r;
+        var cc = col + c;
+        if (rr >= 0 && rr < modules.length && cc >= 0 && cc < modules.length) {
+          modules[rr][cc] = (
+            (r >= 0 && r <= 6 && (c === 0 || c === 6)) ||
+            (c >= 0 && c <= 6 && (r === 0 || r === 6)) ||
+            (r >= 2 && r <= 4 && c >= 2 && c <= 4)
+          );
+        }
+      }
+    }
+  }
+  
+  function encodeData(modules, text, size) {
+    // Simple encoding based on text content
+    // This creates a deterministic pattern
     var hash = 0;
     for (var i = 0; i < text.length; i++) {
       hash = ((hash << 5) - hash) + text.charCodeAt(i);
       hash = hash & hash;
     }
     
-    // Draw pseudo-random pattern
-    for (var y = 0; y < modules; y++) {
-      for (var x = 0; x < modules; x++) {
-        var val = (hash + x * 7 + y * 13) & 0xFF;
-        if (val % 2 === 0) {
-          ctx.fillRect(x * moduleSize, y * moduleSize, moduleSize, moduleSize);
+    // Fill remaining modules with pattern
+    for (var row = 0; row < size; row++) {
+      for (var col = 0; col < size; col++) {
+        // Skip if already set (finder patterns, timing, etc.)
+        if (row < 9 && col < 9) continue;
+        if (row < 9 && col >= size - 8) continue;
+        if (row >= size - 8 && col < 9) continue;
+        if (row === 6 || col === 6) continue;
+        
+        // Create pattern based on hash and position
+        var val = hash + row * 7 + col * 13;
+        modules[row][col] = ((val & 0xFF) % 2 === 0);
+      }
+    }
+  }
+  
+  function renderQRCode(qr, canvas, size) {
+    var ctx = canvas.getContext('2d');
+    canvas.width = size;
+    canvas.height = size;
+    
+    var scale = size / qr.size;
+    
+    // White background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, size, size);
+    
+    // Black modules
+    ctx.fillStyle = '#000000';
+    for (var row = 0; row < qr.size; row++) {
+      for (var col = 0; col < qr.size; col++) {
+        if (qr.modules[row][col]) {
+          ctx.fillRect(col * scale, row * scale, scale, scale);
         }
       }
     }
-    
-    // Add positioning markers (corners)
-    var markerSize = moduleSize * 7;
-    drawPositioningMarker(ctx, 0, 0, moduleSize);
-    drawPositioningMarker(ctx, size - markerSize, 0, moduleSize);
-    drawPositioningMarker(ctx, 0, size - markerSize, moduleSize);
-    
-    return canvas.toDataURL('image/png');
-  };
-  
-  function drawPositioningMarker(ctx, x, y, moduleSize) {
-    ctx.fillStyle = '#000000';
-    // Outer square
-    ctx.fillRect(x, y, moduleSize * 7, moduleSize * 7);
-    // Inner white square
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(x + moduleSize, y + moduleSize, moduleSize * 5, moduleSize * 5);
-    // Center black square
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3);
   }
   
-  // Compatible API with qrcode library
+  // Public API compatible with qrcode library
   window.QRCode = {
     toCanvas: function(canvas, text, options, callback) {
       try {
         var size = (options && options.width) || 100;
-        canvas.width = size;
-        canvas.height = size;
+        var qr = generateQRCode(text, size);
+        renderQRCode(qr, canvas, size);
         
-        var ctx = canvas.getContext('2d');
-        var img = new Image();
-        
-        img.onload = function() {
-          ctx.drawImage(img, 0, 0, size, size);
-          if (callback) callback(null);
-        };
-        
-        img.onerror = function(err) {
-          if (callback) callback(new Error('Failed to load QR code image'));
-        };
-        
-        img.src = generateQRCodeDataURL(text);
+        if (callback) {
+          setTimeout(function() {
+            callback(null);
+          }, 0);
+        }
       } catch (error) {
-        if (callback) callback(error);
+        if (callback) {
+          callback(error);
+        }
       }
     }
   };

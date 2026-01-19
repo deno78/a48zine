@@ -4,8 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A48zine - A4一枚で8ページのミニマガジン</title>
+    <script>
+        // Fallback loader for QR code library
+        function loadLocalQRCode() {
+            var script = document.createElement('script');
+            script.src = 'qrcodegen.js';
+            document.head.appendChild(script);
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="qrcodegen.js"></script>
+    <!-- QR Code library - CDN primary, local fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" onerror="loadLocalQRCode()"></script>
     <style>
         @page {
             size: A4 landscape;
@@ -356,7 +365,7 @@
                     errorCorrectionLevel: 'M'
                 }, function (error) {
                     if (error) {
-                        console.error('QRコード生成エラー:', error);
+                        console.error('QR code generation error:', error);
                         canvas.style.display = 'none';
                     } else {
                         canvas.style.display = 'block';
