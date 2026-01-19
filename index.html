@@ -21,16 +21,40 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 0;
             border: 2px solid #333;
+            position: relative;
+        }
+
+        /* Center cut line markers - visible only in preview */
+        .preview-container::before,
+        .preview-container::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: repeating-linear-gradient(
+                to right,
+                #ddd 0px,
+                #ddd 5px,
+                transparent 5px,
+                transparent 10px
+            );
+            pointer-events: none;
         }
 
         /* Individual page styling */
         .preview-page {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 10mm;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
             background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .preview-page h2 {
@@ -85,9 +109,50 @@
                 page-break-after: avoid;
             }
 
+            /* Remove preview dotted line, replace with print-specific cut line */
+            .preview-container::before,
+            .preview-container::after {
+                background: none;
+            }
+
+            /* Add very light gray dotted center cut line for print */
+            .preview-container::before {
+                background: repeating-linear-gradient(
+                    to right,
+                    #e0e0e0 0px,
+                    #e0e0e0 3px,
+                    transparent 3px,
+                    transparent 8px
+                );
+            }
+
+            /* Alternative: small marks at both ends of center line */
+            .preview-container::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+                height: 0;
+                background: none;
+            }
+
+            .preview-container::after {
+                box-shadow: 
+                    0 0 0 1px #d0d0d0,
+                    calc(100% - 1px) 0 0 1px #d0d0d0;
+            }
+
             .preview-page {
-                border: 1px solid #ccc;
+                border: none !important;
+                padding: 10mm;
                 page-break-inside: avoid;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                box-shadow: none;
             }
 
             .preview-page h2 {
