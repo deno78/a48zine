@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A48zine - A4一枚で8ページのミニマガジン</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        /* Preview container styling */
+        .preview-container {
+            width: 100%;
+            aspect-ratio: 297 / 210; /* A4 landscape ratio */
+            background: white;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 0;
+            border: 2px solid #333;
+        }
+
+        /* Individual page styling */
+        .preview-page {
+            border: 1px solid #ccc;
+            padding: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .preview-page h2 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .preview-page p {
+            font-size: 10px;
+            line-height: 1.2;
+            overflow: hidden;
+        }
+
+        /* Rotation for top row pages (2, 3, 4, 5) */
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
+
+        /* Print media query */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Hide input UI */
+            .input-section {
+                display: none !important;
+            }
+
+            /* Hide instructions and header */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Make preview full page */
+            .preview-section {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                padding: 0;
+                margin: 0;
+            }
+
+            .preview-container {
+                width: 100%;
+                height: 100%;
+                border: none;
+                page-break-after: avoid;
+            }
+
+            .preview-page {
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+
+            .preview-page h2 {
+                font-size: 14px;
+            }
+
+            .preview-page p {
+                font-size: 11px;
+            }
+        }
+
+        /* Input area styling */
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            ring: 2px;
+            ring-color: #3b82f6;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <!-- Header -->
+        <header class="mb-6 no-print">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">A48zine</h1>
+            <p class="text-gray-600">A4一枚で8ページのミニマガジンを作成できるツールです</p>
+            <p class="text-sm text-gray-500 mt-2">印刷するには Ctrl+P (Mac: Cmd+P) を押してください</p>
+        </header>
+
+        <!-- Main content -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Input Section (Left) -->
+            <div class="input-section bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-gray-800">ページ入力</h2>
+                <div class="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+                    <!-- Page 1 -->
+                    <div class="input-group">
+                        <label for="heading1" class="text-blue-600">ページ1 見出し</label>
+                        <input type="text" id="heading1" placeholder="見出しを入力">
+                        <label for="content1" class="mt-2">本文</label>
+                        <textarea id="content1" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 2 -->
+                    <div class="input-group">
+                        <label for="heading2" class="text-blue-600">ページ2 見出し</label>
+                        <input type="text" id="heading2" placeholder="見出しを入力">
+                        <label for="content2" class="mt-2">本文</label>
+                        <textarea id="content2" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 3 -->
+                    <div class="input-group">
+                        <label for="heading3" class="text-blue-600">ページ3 見出し</label>
+                        <input type="text" id="heading3" placeholder="見出しを入力">
+                        <label for="content3" class="mt-2">本文</label>
+                        <textarea id="content3" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 4 -->
+                    <div class="input-group">
+                        <label for="heading4" class="text-blue-600">ページ4 見出し</label>
+                        <input type="text" id="heading4" placeholder="見出しを入力">
+                        <label for="content4" class="mt-2">本文</label>
+                        <textarea id="content4" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 5 -->
+                    <div class="input-group">
+                        <label for="heading5" class="text-blue-600">ページ5 見出し</label>
+                        <input type="text" id="heading5" placeholder="見出しを入力">
+                        <label for="content5" class="mt-2">本文</label>
+                        <textarea id="content5" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 6 -->
+                    <div class="input-group">
+                        <label for="heading6" class="text-blue-600">ページ6 見出し</label>
+                        <input type="text" id="heading6" placeholder="見出しを入力">
+                        <label for="content6" class="mt-2">本文</label>
+                        <textarea id="content6" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 7 -->
+                    <div class="input-group">
+                        <label for="heading7" class="text-blue-600">ページ7 見出し</label>
+                        <input type="text" id="heading7" placeholder="見出しを入力">
+                        <label for="content7" class="mt-2">本文</label>
+                        <textarea id="content7" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+
+                    <!-- Page 8 -->
+                    <div class="input-group">
+                        <label for="heading8" class="text-blue-600">ページ8 見出し</label>
+                        <input type="text" id="heading8" placeholder="見出しを入力">
+                        <label for="content8" class="mt-2">本文</label>
+                        <textarea id="content8" rows="3" placeholder="本文を入力"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Section (Right) -->
+            <div class="preview-section bg-gray-200 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-gray-800 no-print">プレビュー (A4横向き)</h2>
+                <div class="preview-container">
+                    <!-- Top row: Pages 2, 3, 4, 5 (rotated 180 degrees) -->
+                    <div class="preview-page rotate-180" id="preview2">
+                        <h2 id="preview-heading2"></h2>
+                        <p id="preview-content2"></p>
+                    </div>
+                    <div class="preview-page rotate-180" id="preview3">
+                        <h2 id="preview-heading3"></h2>
+                        <p id="preview-content3"></p>
+                    </div>
+                    <div class="preview-page rotate-180" id="preview4">
+                        <h2 id="preview-heading4"></h2>
+                        <p id="preview-content4"></p>
+                    </div>
+                    <div class="preview-page rotate-180" id="preview5">
+                        <h2 id="preview-heading5"></h2>
+                        <p id="preview-content5"></p>
+                    </div>
+
+                    <!-- Bottom row: Pages 1, 8, 7, 6 (normal orientation) -->
+                    <div class="preview-page" id="preview1">
+                        <h2 id="preview-heading1"></h2>
+                        <p id="preview-content1"></p>
+                    </div>
+                    <div class="preview-page" id="preview8">
+                        <h2 id="preview-heading8"></h2>
+                        <p id="preview-content8"></p>
+                    </div>
+                    <div class="preview-page" id="preview7">
+                        <h2 id="preview-heading7"></h2>
+                        <p id="preview-content7"></p>
+                    </div>
+                    <div class="preview-page" id="preview6">
+                        <h2 id="preview-heading6"></h2>
+                        <p id="preview-content6"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Real-time preview update function
+        function updatePreview(pageNumber) {
+            const heading = document.getElementById(`heading${pageNumber}`).value;
+            const content = document.getElementById(`content${pageNumber}`).value;
+            
+            document.getElementById(`preview-heading${pageNumber}`).textContent = heading;
+            document.getElementById(`preview-content${pageNumber}`).textContent = content;
+        }
+
+        // Add event listeners to all input fields
+        for (let i = 1; i <= 8; i++) {
+            document.getElementById(`heading${i}`).addEventListener('input', () => updatePreview(i));
+            document.getElementById(`content${i}`).addEventListener('input', () => updatePreview(i));
+        }
+
+        // Initialize with sample content (optional - can be removed)
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default content for demonstration
+            document.getElementById('heading1').value = 'ようこそ';
+            document.getElementById('content1').value = 'A48zineへようこそ。このツールでA4一枚から8ページの小冊子を作成できます。';
+            updatePreview(1);
+        });
+    </script>
+</body>
+</html>
