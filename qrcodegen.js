@@ -19,7 +19,7 @@
   // NOTE: These patterns are for visual representation and may not be scannable
   // Replace with a full QR implementation for production scanning needs
   
-  function generateQRCode(text, size) {
+  function generateQRCode(text) {
     // Create a simple data matrix encoding
     // This is a minimal QR code implementation
     var qr = {
@@ -78,7 +78,7 @@
     var hash = 0;
     for (var i = 0; i < text.length; i++) {
       hash = ((hash << 5) - hash) + text.charCodeAt(i);
-      hash = hash & hash;
+      hash = hash | 0; // Convert to 32-bit integer
     }
     
     // Fill remaining modules with pattern
@@ -124,7 +124,7 @@
     toCanvas: function(canvas, text, options, callback) {
       try {
         var size = (options && options.width) || 100;
-        var qr = generateQRCode(text, size);
+        var qr = generateQRCode(text);
         renderQRCode(qr, canvas, size);
         
         if (callback) {
