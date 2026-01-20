@@ -486,9 +486,18 @@
                 }
                 
                 // Populate form fields
-                document.getElementById(`heading${pageNumber}`).value = title;
-                document.getElementById(`content${pageNumber}`).value = content;
-                document.getElementById(`url${pageNumber}`).value = url;
+                const headingEl = document.getElementById(`heading${pageNumber}`);
+                const contentEl = document.getElementById(`content${pageNumber}`);
+                const urlEl = document.getElementById(`url${pageNumber}`);
+                
+                if (!headingEl || !contentEl || !urlEl) {
+                    console.warn(`Form elements for page ${pageNumber} not found, skipping`);
+                    continue;
+                }
+                
+                headingEl.value = title;
+                contentEl.value = content;
+                urlEl.value = url;
                 
                 // Update preview
                 updatePreview(pageNumber);
