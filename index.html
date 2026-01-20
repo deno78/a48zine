@@ -4,17 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A48zine - A4一枚で8ページのミニマガジン</title>
-    <script>
-        // Fallback loader for QR code library
-        function loadLocalQRCode() {
-            var script = document.createElement('script');
-            script.src = 'qrcodegen.js';
-            document.head.appendChild(script);
-        }
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- QR Code library - CDN primary, local fallback -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" onerror="loadLocalQRCode()"></script>
     <style>
         @page {
             size: A4 landscape;
@@ -80,10 +70,11 @@
             white-space: pre-wrap;
         }
 
-        .preview-page .qr-code {
-            max-width: 80px;
-            max-height: 80px;
+        .preview-page img {
+            max-width: 120px;
+            max-height: 120px;
             margin: 4px auto;
+            object-fit: contain;
         }
 
         /* Rotation for top row pages (2, 3, 4, 5) */
@@ -159,9 +150,10 @@
                 white-space: pre-wrap;
             }
 
-            .preview-page .qr-code {
-                max-width: 100px;
-                max-height: 100px;
+            .preview-page img {
+                max-width: 150px;
+                max-height: 150px;
+                object-fit: contain;
             }
         }
 
@@ -226,7 +218,7 @@
                         </label>
                         <input type="file" id="csv-upload" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
                     </div>
-                    <p class="text-xs text-gray-500 mt-2">CSV形式: ページ番号, タイトル, 本文, URL</p>
+                    <p class="text-xs text-gray-500 mt-2">CSV形式: ページ番号, タイトル, 本文</p>
                 </div>
                 
                 <div class="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
@@ -236,8 +228,8 @@
                         <input type="text" id="heading1" placeholder="見出しを入力">
                         <label for="content1" class="mt-2">本文</label>
                         <textarea id="content1" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url1" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url1" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image1" class="mt-2">画像</label>
+                        <input type="file" id="image1" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 2 -->
@@ -246,8 +238,8 @@
                         <input type="text" id="heading2" placeholder="見出しを入力">
                         <label for="content2" class="mt-2">本文</label>
                         <textarea id="content2" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url2" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url2" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image2" class="mt-2">画像</label>
+                        <input type="file" id="image2" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 3 -->
@@ -256,8 +248,8 @@
                         <input type="text" id="heading3" placeholder="見出しを入力">
                         <label for="content3" class="mt-2">本文</label>
                         <textarea id="content3" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url3" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url3" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image3" class="mt-2">画像</label>
+                        <input type="file" id="image3" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 4 -->
@@ -266,8 +258,8 @@
                         <input type="text" id="heading4" placeholder="見出しを入力">
                         <label for="content4" class="mt-2">本文</label>
                         <textarea id="content4" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url4" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url4" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image4" class="mt-2">画像</label>
+                        <input type="file" id="image4" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 5 -->
@@ -276,8 +268,8 @@
                         <input type="text" id="heading5" placeholder="見出しを入力">
                         <label for="content5" class="mt-2">本文</label>
                         <textarea id="content5" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url5" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url5" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image5" class="mt-2">画像</label>
+                        <input type="file" id="image5" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 6 -->
@@ -286,8 +278,8 @@
                         <input type="text" id="heading6" placeholder="見出しを入力">
                         <label for="content6" class="mt-2">本文</label>
                         <textarea id="content6" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url6" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url6" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image6" class="mt-2">画像</label>
+                        <input type="file" id="image6" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 7 -->
@@ -296,8 +288,8 @@
                         <input type="text" id="heading7" placeholder="見出しを入力">
                         <label for="content7" class="mt-2">本文</label>
                         <textarea id="content7" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url7" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url7" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image7" class="mt-2">画像</label>
+                        <input type="file" id="image7" accept="image/*" class="text-sm">
                     </div>
 
                     <!-- Page 8 -->
@@ -306,8 +298,8 @@
                         <input type="text" id="heading8" placeholder="見出しを入力">
                         <label for="content8" class="mt-2">本文</label>
                         <textarea id="content8" rows="3" placeholder="本文を入力"></textarea>
-                        <label for="url8" class="mt-2">QRコード用URL</label>
-                        <input type="url" id="url8" placeholder="URLを入力（例: https://example.com）">
+                        <label for="image8" class="mt-2">画像</label>
+                        <input type="file" id="image8" accept="image/*" class="text-sm">
                     </div>
                 </div>
             </div>
@@ -320,44 +312,44 @@
                     <div class="preview-page rotate-180" id="preview2">
                         <h2 id="preview-heading2"></h2>
                         <p id="preview-content2"></p>
-                        <canvas id="qr-canvas2" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image2" style="display:none;">
                     </div>
                     <div class="preview-page rotate-180" id="preview3">
                         <h2 id="preview-heading3"></h2>
                         <p id="preview-content3"></p>
-                        <canvas id="qr-canvas3" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image3" style="display:none;">
                     </div>
                     <div class="preview-page rotate-180" id="preview4">
                         <h2 id="preview-heading4"></h2>
                         <p id="preview-content4"></p>
-                        <canvas id="qr-canvas4" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image4" style="display:none;">
                     </div>
                     <div class="preview-page rotate-180" id="preview5">
                         <h2 id="preview-heading5"></h2>
                         <p id="preview-content5"></p>
-                        <canvas id="qr-canvas5" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image5" style="display:none;">
                     </div>
 
                     <!-- Bottom row: Pages 1, 8, 7, 6 (normal orientation) -->
                     <div class="preview-page" id="preview1">
                         <h2 id="preview-heading1"></h2>
                         <p id="preview-content1"></p>
-                        <canvas id="qr-canvas1" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image1" style="display:none;">
                     </div>
                     <div class="preview-page" id="preview8">
                         <h2 id="preview-heading8"></h2>
                         <p id="preview-content8"></p>
-                        <canvas id="qr-canvas8" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image8" style="display:none;">
                     </div>
                     <div class="preview-page" id="preview7">
                         <h2 id="preview-heading7"></h2>
                         <p id="preview-content7"></p>
-                        <canvas id="qr-canvas7" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image7" style="display:none;">
                     </div>
                     <div class="preview-page" id="preview6">
                         <h2 id="preview-heading6"></h2>
                         <p id="preview-content6"></p>
-                        <canvas id="qr-canvas6" class="qr-code" style="display:none;"></canvas>
+                        <img id="preview-image6" style="display:none;">
                     </div>
                 </div>
             </div>
@@ -369,28 +361,25 @@
         function updatePreview(pageNumber) {
             const heading = document.getElementById(`heading${pageNumber}`).value;
             const content = document.getElementById(`content${pageNumber}`).value;
-            const url = document.getElementById(`url${pageNumber}`).value;
             
             document.getElementById(`preview-heading${pageNumber}`).textContent = heading;
             document.getElementById(`preview-content${pageNumber}`).textContent = content;
+        }
+
+        // Handle image upload
+        function handleImageUpload(pageNumber, file) {
+            const img = document.getElementById(`preview-image${pageNumber}`);
             
-            // Generate QR code if URL is provided
-            const canvas = document.getElementById(`qr-canvas${pageNumber}`);
-            if (url && url.trim() !== '') {
-                QRCode.toCanvas(canvas, url, {
-                    width: 100,
-                    margin: 1,
-                    errorCorrectionLevel: 'M'
-                }, function (error) {
-                    if (error) {
-                        console.error('QR code generation error:', error);
-                        canvas.style.display = 'none';
-                    } else {
-                        canvas.style.display = 'block';
-                    }
-                });
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             } else {
-                canvas.style.display = 'none';
+                img.style.display = 'none';
+                img.src = '';
             }
         }
 
@@ -398,7 +387,10 @@
         for (let i = 1; i <= 8; i++) {
             document.getElementById(`heading${i}`).addEventListener('input', () => updatePreview(i));
             document.getElementById(`content${i}`).addEventListener('input', () => updatePreview(i));
-            document.getElementById(`url${i}`).addEventListener('input', () => updatePreview(i));
+            document.getElementById(`image${i}`).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                handleImageUpload(i, file);
+            });
         }
 
         // Initialize with sample content (optional - can be removed)
@@ -412,9 +404,9 @@
         // CSV Template Download Function
         function downloadCSVTemplate() {
             // Create CSV content with header and sample data
-            let csvContent = 'ページ番号,タイトル,本文,URL\n';
+            let csvContent = 'ページ番号,タイトル,本文\n';
             for (let i = 1; i <= 8; i++) {
-                csvContent += `${i},ページ${i}のタイトル,ここに本文を入力してください,\n`;
+                csvContent += `${i},ページ${i}のタイトル,ここに本文を入力してください\n`;
             }
             
             // Create blob and download
@@ -471,7 +463,7 @@
                 // Parse CSV line (handle quoted fields)
                 const fields = parseCSVLine(line);
                 
-                if (fields.length < 4) {
+                if (fields.length < 3) {
                     console.warn(`Line ${i + 1} has insufficient fields, skipping`);
                     continue;
                 }
@@ -479,7 +471,6 @@
                 const pageNumber = parseInt(fields[0], 10);
                 const title = fields[1];
                 const content = fields[2];
-                const url = fields[3];
                 
                 // Validate page number
                 if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > 8) {
@@ -490,16 +481,14 @@
                 // Populate form fields
                 const headingEl = document.getElementById(`heading${pageNumber}`);
                 const contentEl = document.getElementById(`content${pageNumber}`);
-                const urlEl = document.getElementById(`url${pageNumber}`);
                 
-                if (!headingEl || !contentEl || !urlEl) {
+                if (!headingEl || !contentEl) {
                     console.warn(`Form elements for page ${pageNumber} not found, skipping`);
                     continue;
                 }
                 
                 headingEl.value = title;
                 contentEl.value = content;
-                urlEl.value = url;
                 
                 // Update preview
                 updatePreview(pageNumber);
