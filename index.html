@@ -371,10 +371,24 @@
             const img = document.getElementById(`preview-image${pageNumber}`);
             
             if (file && file.type.startsWith('image/')) {
+                // Validate file size (max 5MB)
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('画像ファイルのサイズが大きすぎます。5MB以下のファイルを選択してください。');
+                    img.style.display = 'none';
+                    img.src = '';
+                    return;
+                }
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     img.src = e.target.result;
                     img.style.display = 'block';
+                };
+                reader.onerror = function() {
+                    alert('画像ファイルの読み込みに失敗しました。');
+                    img.style.display = 'none';
+                    img.src = '';
                 };
                 reader.readAsDataURL(file);
             } else {
