@@ -5,6 +5,3 @@ A4一枚で8ページのミニマガジンを作成できるツールです。
 このツールは以下のURLで公開されています：
 
 https://deno78.github.io/a48zine/
-
-### QRコード
-![QR Code](qrcode.png)
