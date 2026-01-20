@@ -211,6 +211,22 @@
             <!-- Input Section (Left) -->
             <div class="input-section bg-white p-6 rounded-lg shadow-lg">
                 <h2 class="text-xl font-bold mb-4 text-gray-800">ページ入力</h2>
+                
+                <!-- CSV Import/Export Section -->
+                <div class="mb-4 p-4 bg-gray-50 rounded border border-gray-200">
+                    <h3 class="text-sm font-semibold mb-2 text-gray-700">CSVインポート/エクスポート</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="downloadCSVTemplate()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                            テンプレートをダウンロード
+                        </button>
+                        <label for="csv-upload" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm cursor-pointer">
+                            CSVをインポート
+                        </label>
+                        <input type="file" id="csv-upload" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">CSV形式: ページ番号, タイトル, 本文, URL</p>
+                </div>
+                
                 <div class="space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
                     <!-- Page 1 -->
                     <div class="input-group">
@@ -390,6 +406,137 @@
             document.getElementById('content1').value = 'A48zineへようこそ。このツールでA4一枚から8ページの小冊子を作成できます。';
             updatePreview(1);
         });
+
+        // CSV Template Download Function
+        function downloadCSVTemplate() {
+            // Create CSV content with header and sample data
+            let csvContent = 'ページ番号,タイトル,本文,URL\n';
+            for (let i = 1; i <= 8; i++) {
+                csvContent += `${i},ページ${i}のタイトル,ここに本文を入力してください,\n`;
+            }
+            
+            // Create blob and download
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'a48zine_template.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // CSV Upload and Parse Function
+        function handleCSVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const text = e.target.result;
+                    parseAndImportCSV(text);
+                    alert('CSVファイルをインポートしました。');
+                } catch (error) {
+                    alert('CSVファイルの読み込みに失敗しました: ' + error.message);
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+            
+            // Reset file input to allow re-uploading the same file
+            event.target.value = '';
+        }
+
+        // Parse CSV and populate form fields
+        function parseAndImportCSV(csvText) {
+            // Split by newlines
+            const lines = csvText.split(/\r?\n/);
+            
+            // Skip header row (first line)
+            let dataStartIndex = 0;
+            if (lines.length > 0 && lines[0].includes('ページ番号')) {
+                dataStartIndex = 1;
+            }
+            
+            // Process each data row
+            for (let i = dataStartIndex; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue; // Skip empty lines
+                
+                // Parse CSV line (handle quoted fields)
+                const fields = parseCSVLine(line);
+                
+                if (fields.length < 4) {
+                    console.warn(`Line ${i + 1} has insufficient fields, skipping`);
+                    continue;
+                }
+                
+                const pageNumber = parseInt(fields[0], 10);
+                const title = fields[1];
+                const content = fields[2];
+                const url = fields[3];
+                
+                // Validate page number
+                if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > 8) {
+                    console.warn(`Invalid page number on line ${i + 1}: ${fields[0]}`);
+                    continue;
+                }
+                
+                // Populate form fields
+                const headingEl = document.getElementById(`heading${pageNumber}`);
+                const contentEl = document.getElementById(`content${pageNumber}`);
+                const urlEl = document.getElementById(`url${pageNumber}`);
+                
+                if (!headingEl || !contentEl || !urlEl) {
+                    console.warn(`Form elements for page ${pageNumber} not found, skipping`);
+                    continue;
+                }
+                
+                headingEl.value = title;
+                contentEl.value = content;
+                urlEl.value = url;
+                
+                // Update preview
+                updatePreview(pageNumber);
+            }
+        }
+
+        // Parse a single CSV line handling quoted fields
+        function parseCSVLine(line) {
+            const fields = [];
+            let currentField = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+                
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        // Escaped quote
+                        currentField += '"';
+                        i++; // Skip next quote
+                    } else {
+                        // Toggle quote state
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    // Field delimiter
+                    fields.push(currentField);
+                    currentField = '';
+                } else {
+                    currentField += char;
+                }
+            }
+            
+            // Add last field
+            fields.push(currentField);
+            
+            return fields;
+        }
     </script>
 </body>
 </html>
